@@ -8,18 +8,34 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./www:/var/www
+      - ./back:/var/www
       - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./etc/nginx/locations.conf:/etc/nginx/locations.conf
       - ./etc/nginx/ssl_redirect.conf:/etc/nginx/ssl_redirect.conf
       - ./etc/nginx/cert.conf:/etc/nginx/cert.conf
-      - ./etc/nginx/cmc_com.conf:/etc/nginx/cmc_com.conf
-      - ./etc/nginx/sites-enabled:/etc/nginx/sites-enabled
+      - ./etc/nginx/site.conf:/etc/nginx/site.conf
       - ./etc/nginx/tools-enabled:/etc/nginx/tools-enabled
       - ./etc/nginx/ssl:/etc/nginx/ssl
       - ./log/nginx_log:/var/log/nginx
     depends_on:
       - php
+
+  php_composer:
+    image: catmodecode/php:latest
+    container_name: ${PROJECT_NAME}_php_composer
+    user: ${USER_ID}:${GROUP_ID}
+    volumes:
+      - ./back:/var/www
+      - ./etc/php/php.ini:/usr/local/etc/php/php.ini
+      - ./etc/php/conf.d/:/usr/local/etc/php/conf.d/
+      - ./log/profiler_log:/var/log/phpprofiler
+    links:
+      - db
+    environment:
+      PHP_IDE_CONFIG: "serverName=Docker"
+    command: "sh -c 'composer install && ./artisan migrate'"
+    depends_on:
+      - db
 
   php:
     image: catmodecode/php:latest
@@ -35,15 +51,25 @@ services:
     environment:
       XDEBUG_CONFIG: "client_host=${LOCAL_IP} client_port=9003"
       PHP_IDE_CONFIG: "serverName=Docker"
+    depends_on:
+      - db
 
   node:
-    image: node:lts-alpine3.14
+    restart: always
+    image: catmodecode/node-quasar:latest
     container_name: ${PROJECT_NAME}_node
     volumes: 
       - ./front:/home/node/app
-    expose:
-      - "8081"
-    command: "npm dev"
+    ports:
+      - 8080:8080
+    command: "npm run --prefix /home/node/app dev"
+
+  node_install:
+    image: node:lts-alpine3.14
+    container_name: ${PROJECT_NAME}_node_i
+    volumes: 
+      - ./front:/home/node/app
+    command: "npm i --prefix /home/node/app"
 
   db:
     image: postgres:13.1-alpine
@@ -59,6 +85,27 @@ services:
     volumes:
       - ./data/db:/var/lib/postgresql/data
       - ./etc/db/my-postgres.conf:/etc/postgresql/postgresql.conf
+
+  db_install:
+    image: postgres:13.1-alpine
+    shm_size: 1g
+    container_name: ${PROJECT_NAME}_db_install
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    restart: always
+    env_file:
+      - ".env"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PG_DATABASE: ${PG_DATABASE}
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+      - ./etc/db/my-postgres.conf:/etc/postgresql/postgresql.conf
+      - ./install-db.sh:/install-db.sh
+    entrypoint: /install-db.sh
+    depends_on:
+      - db
 
   dbadmin:
     image: dpage/pgadmin4:4.28
