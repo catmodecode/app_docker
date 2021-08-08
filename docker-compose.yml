@@ -4,6 +4,7 @@ services:
   nginx:
     image: nginx:1.19.2-alpine
     container_name: ${PROJECT_NAME}_nginx
+    restart: always
     ports:
       - 80:80
       - 443:443
@@ -38,6 +39,7 @@ services:
       - db
 
   php:
+    restart: always
     image: catmodecode/php:latest
     container_name: ${PROJECT_NAME}_php
     user: ${USER_ID}:${GROUP_ID}
@@ -91,7 +93,6 @@ services:
     shm_size: 1g
     container_name: ${PROJECT_NAME}_db_install
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
-    restart: always
     env_file:
       - ".env"
     environment:
@@ -110,6 +111,7 @@ services:
   dbadmin:
     image: dpage/pgadmin4:4.28
     container_name: ${PROJECT_NAME}_dbadmin
+    restart: unless-stopped
     env_file:
       - ".env"
     environment:
