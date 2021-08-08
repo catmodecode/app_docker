@@ -5,11 +5,27 @@
 Nothing here for now
 </p>
 
-1. `git clone --recurse-submodules  git@github.com:catmodecode/app_docker.git`
+1.
+    ```
+    git clone --recurse-submodules  git@github.com:catmodecode/app_docker.git .
+    ```
 
-2. Копируем корневой `.env.example` в '.env'
+    Тут можно выполнить команду
+    ```
+    ./start.sh
+    ```
+    Если не работает, идем по шагам далее
+
+2. Копируем корневой `.env.example` в `.env`
+    ```
+    cp .env.example .env
+    ```
 
 3. Копируем `back/.env.testing.example` в `back/.env.testing` и `back/.env.example` в `back/.env`, в последнем ставим свои настройки из корневого `.env`
+    ```
+    cp back/.env.example back/.env
+    cp back/.env.testing.example back/.env.testing
+    ```
 
 `Корневой .env`
 ```env
@@ -65,6 +81,23 @@ QUEUE_CONNECTION=database
 
 ```
 
-4. docker-compose run php sh -c "./artisan key:generate && ./artisan tokens:generate"
+4. выдаст ошибку, но это для начала не важно
+    ```
+    docker-compose run php_composer
+    ```
 
-5. docker-compose up -d и готово
+5. 
+    ```
+    docker-compose run node_install
+    ```
+
+6.
+    ```
+    docker-compose run php sh -c "./artisan key:generate && ./artisan tokens:generate"
+    ```
+
+7. 
+    ```
+    docker-compose up -d
+    ```
+    и готово
