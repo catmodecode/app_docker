@@ -5,9 +5,13 @@
 Nothing here for now
 </p>
 
-1. В директории back копируем .env.testing.example в .env.testing и .env.example в .env, в последнем ставим свои настройки из корневого .env
+1. `git clone --recurse-submodules  git@github.com:catmodecode/app_docker.git`
 
-`.env`
+2. Копируем корневой `.env.example` в '.env'
+
+3. Копируем `back/.env.testing.example` в `back/.env.testing` и `back/.env.example` в `back/.env`, в последнем ставим свои настройки из корневого `.env`
+
+`Корневой .env`
 ```env
 PROJECT_NAME=app
 
@@ -39,7 +43,7 @@ MT_MESSAGE_LIMIT=102400001
 ```env
 APP_NAME=App
 APP_ENV=local
-APP_KEY=7o2iGF3c8I3I0caHJ0SxbMp54ufwigH1
+APP_KEY=0123456789ABCDEFGHIGK
 APP_DEBUG=true
 APP_URL=https://app.com
 APP_TIMEZONE=UTC
@@ -61,6 +65,6 @@ QUEUE_CONNECTION=database
 
 ```
 
-2. docker-compose run php sh -c "./artisan key:generate && ./artisan tokens:generate"
+4. docker-compose run php sh -c "./artisan key:generate && ./artisan tokens:generate"
 
-3. docker-compose up -d и готово
+5. docker-compose up -d и готово
