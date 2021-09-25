@@ -144,3 +144,8 @@ services:
     image: jokkedk/webgrind:latest
     volumes:
       - ./log/profiler_log:/tmp
+networks: 
+  default:
+    ipam:
+      config:
+        - subnet: 172.16.238.0/24
