@@ -20,6 +20,10 @@ services:
       - ./log/nginx_log:/var/log/nginx
     depends_on:
       - php
+    networks:
+      default:
+        ipv4_address: 172.16.238.100
+
 
   php_composer:
     image: catmodecode/php:latest
@@ -57,6 +61,9 @@ services:
       - db
 
   node:
+    extra_hosts:
+      - "app.com:172.16.238.100"
+
     restart: always
     image: catmodecode/node-quasar:latest
     container_name: ${PROJECT_NAME}_node
@@ -64,7 +71,8 @@ services:
       - ./front:/home/node/app
     ports:
       - 8080:8080
-    command: "npm run --prefix /home/node/app dev"
+      - 4000:4000
+    command: "npm run --prefix /home/node/app ssr"
 
   node_install:
     image: node:lts-alpine3.14
