@@ -32,7 +32,7 @@ services:
     volumes:
       - ./back:/var/www
       - ./etc/php/php.ini:/usr/local/etc/php/php.ini
-      - ./etc/php/conf.d/:/usr/local/etc/php/conf.d/
+      - ./etc/php/conf.d:/usr/local/etc/php/conf.d
       - ./log/profiler_log:/var/log/phpprofiler
     links:
       - db
@@ -52,7 +52,7 @@ services:
     volumes:
       - ./back:/var/www
       - ./etc/php/php.ini:/usr/local/etc/php/php.ini
-      - ./etc/php/conf.d/:/usr/local/etc/php/conf.d/
+      - ./etc/php/conf.d:/usr/local/etc/php/conf.d
       - ./log/profiler_log:/var/log/phpprofiler
     links:
       - db
