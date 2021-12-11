@@ -14,8 +14,6 @@ log/*_log/
 www/*
 !www/.gitkeep
 .env
-front/
-back/
 
 # Editor directories
 .idea

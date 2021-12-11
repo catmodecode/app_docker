@@ -1,6 +1,8 @@
 [submodule "front"]
 	path = front
 	url = git@github.com:catmodecode/app_front.git
+	branch = master
 [submodule "back"]
 	path = back
 	url = git@github.com:catmodecode/app.git
+	branch = master
